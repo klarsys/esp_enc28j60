@@ -11,15 +11,16 @@ FW_BASE		= firmware
 
 # Base directory for the compiler. Needs a / at the end; if not set it'll use the tools that are in
 # the PATH.
-XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin
-
+#XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin
+XTENSA_TOOLS_ROOT = ../zmote-toolchain/xtensa-lx106-elf/bin/
 # base directory of the ESP8266 SDK package, absolute
-SDK_BASE	?= c:/Espressif/ESP8266_SDK
-SDK_TOOLS	?= c:/Espressif/utils
+SDK_BASE	?= ../zmote-toolchain/esp_iot_sdk_v1.5.0//
+SDK_TOOLS	?= ../zmote-toolchain/bin
 
 # esptool path and port
-ESPTOOL ?= $(SDK_TOOLS)/esptool.exe
-ESPPORT ?= COM3
+#ESPTOOL ?= c:/Users/rhari_000/Downloads/esptool.exe
+ESPTOOL ?=  c:/Python27/python ../zmote-toolchain/bin/esptool.py
+ESPPORT ?= COM6
 # Baud rate for programmer
 BAUD ?= 115200
 

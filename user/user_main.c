@@ -181,6 +181,19 @@ void user_init(void) {
   os_printf("\nReady\n");	
 }
 
-void user_rf_pre_init() {
-	//Not needed, but some SDK versions want this defined.
+void ICACHE_FLASH_ATTR user_rf_pre_init()
+{
+	//Not needed, but newer SDK versions want this defined.
 }
+
+
+// Needed from SDK 1.5.4 onwards
+// We use the second section in flash (between rboot and rom0)
+// for the SDK to use for RF_CAL parameters
+// Clearing this area cause the SDK to re-run RF_CAL according to documents
+// I have no idea when or why someone might want to do that (harik)
+uint32 ICACHE_FLASH_ATTR user_rf_cal_sector_set(void)
+{
+	return 0x50;
+}
+
