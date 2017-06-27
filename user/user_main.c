@@ -155,6 +155,14 @@ void user_init(void) {
   CFG_Load();
 	ioInit();	     
   
+  for (int j = 0; j < 3; j++) {
+	  MAIN_DEBUG("\nSleeping...\n");
+	  for (int i = 0; i < 70; i++) {
+		MAIN_DEBUG(".");
+		os_delay_us(10000);
+	  }
+  }
+  
   MAIN_DEBUG("\nInitialise ENC stack, dhcp if requested\n");	
   stack_init();  
 
