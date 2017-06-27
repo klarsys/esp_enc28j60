@@ -215,14 +215,14 @@ libesphttpd/Makefile:
 libesphttpd: libesphttpd/Makefile
 	$(Q) make -C libesphttpd
 
-$(TARGET_OUT): $(APP_AR)
+$(TARGET_OUT): $(APP_AR) force
 	$(vecho) "LD $@"
 	$(Q) $(LD) -Llibesphttpd -L$(SDK_LIBDIR) $(LD_SCRIPT) $(LDFLAGS) -Wl,--start-group $(LIBS) $(APP_AR) -Wl,--end-group -o $@
 	$(vecho) "------------------------------------------------------------------------------"
 	$(vecho) "Section info:"
 	$(Q) $(OBJDUMP) -h -j .data -j .rodata -j .bss -j .text -j .irom0.text $@
 	$(vecho) "------------------------------------------------------------------------------"
-	$(Q) $(ESPTOOL) elf2image $(TARGET_OUT) -o$(FW_BASE)/ $(flashimageoptions)
+	$(Q) PATH=$$PATH:"$(XTENSA_TOOLS_ROOT)" $(ESPTOOL) elf2image $(TARGET_OUT) -o$(FW_BASE)/ $(flashimageoptions)
 	$(vecho) "------------------------------------------------------------------------------"
 	$(vecho) "Generate 0x00000.bin and 0x40000.bin successully in folder $(FW_BASE)."
 	$(vecho) "0x00000.bin-------->0x00000"
@@ -287,3 +287,6 @@ clean:
 	$(Q) rm -rf $(FW_BASE)
 
 $(foreach bdir,$(BUILD_DIR),$(eval $(call compile-objects,$(bdir))))
+
+force:
+	@true
