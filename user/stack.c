@@ -176,7 +176,8 @@ void ICACHE_FLASH_ATTR stack_updateIPs (void) {
 //Management of TCP timer
 void ICACHE_FLASH_ATTR tcp_timer_call (void)
 {
-	for (u8 index = 0;index<MAX_TCP_ENTRY;index++)
+  u8 index;
+	for (index = 0;index<MAX_TCP_ENTRY;index++)
 	{
 		if (tcp_entry[index].time == 0)
 		{
@@ -213,11 +214,12 @@ void ICACHE_FLASH_ATTR tcp_timer_call (void)
 //Managing the ARP timer
 void ICACHE_FLASH_ATTR arp_timer_call (void)
 {
-	for (u8 a = 0;a<MAX_ARP_ENTRY;a++)
+  u8 a, b;
+	for (a = 0;a<MAX_ARP_ENTRY;a++)
 	{
 		if (arp_entry[a].arp_t_time == 0)
 		{
-			for (u8 b = 0;b<6;b++)
+			for (b = 0;b<6;b++)
 			{
 				arp_entry[a].arp_t_mac[b]= 0;
 			}
@@ -459,9 +461,9 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
     ip       = (IP_Header       *)&eth_buffer[IP_OFFSET];
         
     //STACK_DEBUG("ARP entry add\n");
-    
+    u8 b, a;
     //Entry already exists ?
-    for (u8 b = 0; b<MAX_ARP_ENTRY; b++)
+    for (b = 0; b<MAX_ARP_ENTRY; b++)
     {
         if( ethernet->EnetPacketType == HTONS(0x0806) ) //If ARP
         {
@@ -469,7 +471,7 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
           if(arp_entry[b].arp_t_ip == arp->ARP_SIPAddr)
           {
           // Time refresh
-          for(u8 a = 0; a < 6; a++) {
+          for(a = 0; a < 6; a++) {
             arp_entry[b].arp_t_mac[a] = ethernet->EnetPacketSrc[a];
           }
           arp_entry[b].arp_t_ip   = arp->ARP_SIPAddr;
@@ -483,7 +485,7 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
           if(arp_entry[b].arp_t_ip == ip->IP_Srcaddr)
           {
             //Time refresh
-            for(u8 a = 0; a < 6; a++) {
+            for(a = 0; a < 6; a++) {
               arp_entry[b].arp_t_mac[a] = ethernet->EnetPacketSrc[a];
             }
             arp_entry[b].arp_t_ip   = ip->IP_Srcaddr;
@@ -494,13 +496,13 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
     }
   
     //Find entry
-    for (u8 b = 0; b<MAX_ARP_ENTRY; b++)
+    for (b = 0; b<MAX_ARP_ENTRY; b++)
     {
         if(arp_entry[b].arp_t_ip == 0)
         {
             if( ethernet->EnetPacketType == HTONS(0x0806) ) //if ARP
             {
-                for(u8 a = 0; a < 6; a++)
+                for(a = 0; a < 6; a++)
                 {
                     arp_entry[b].arp_t_mac[a] = ethernet->EnetPacketSrc[a]; 
                 }
@@ -510,7 +512,7 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
             }
             if( ethernet->EnetPacketType == HTONS(0x0800) ) //if IP
             {
-                for(u8 a = 0; a < 6; a++)
+                for(a = 0; a < 6; a++)
                 {
                     arp_entry[b].arp_t_mac[a] = ethernet->EnetPacketSrc[a]; 
                 }
@@ -530,7 +532,8 @@ void ICACHE_FLASH_ATTR arp_entry_add (void)
 //PORT DONE - This routine search by IP ARP entry
 char ICACHE_FLASH_ATTR arp_entry_search (u32 dest_ip)
 {
-	for (u8 b = 0;b<MAX_ARP_ENTRY;b++)
+  u8 b;
+	for (b = 0;b<MAX_ARP_ENTRY;b++)
 	{
 		if(arp_entry[b].arp_t_ip == dest_ip)
 		{
@@ -553,7 +556,7 @@ void ICACHE_FLASH_ATTR new_eth_header (u8 *buffer,u32 dest_ip)
 	b = arp_entry_search (dest_ip);
 	if (b != MAX_ARP_ENTRY) //found entry if not equal
 	{
-		for(u8 a = 0; a < 6; a++)
+		for(a = 0; a < 6; a++)
 		{			
 			ethernet->EnetPacketDest[a] = arp_entry[b].arp_t_mac[a];			
 			ethernet->EnetPacketSrc[a] = mymac[a];
@@ -744,7 +747,7 @@ void ICACHE_FLASH_ATTR icmp_send (u32 dest_ip, u8 icmp_type,
   ip->IP_Proto      = PROT_ICMP;
   make_ip_header (eth_buffer,dest_ip);
 
-  //Berechnung der ICMP Header länge
+  //Berechnung der ICMP Header lï¿½nge
   result16 = htons(ip->IP_Pktlen);
   result16 = result16 - ((ip->IP_Vers_Len & 0x0F) << 2);
 
@@ -781,7 +784,7 @@ u16 ICACHE_FLASH_ATTR checksum (u8 *pointer,u16 result16,u32 result32)
 		result16_1 = ((DataH << 8)+DataL);
 		//Addiert packet mit vorherigen
 		result32 = result32 + result16_1;
-		//decrimiert Länge von TCP Headerschleife um 2
+		//decrimiert Lï¿½nge von TCP Headerschleife um 2
 		result16 -=2;
 	}
 
@@ -830,7 +833,7 @@ void ICACHE_FLASH_ATTR make_ip_header (u8 *buffer,u32 dest_ip)
   ip->IP_Srcaddr     = *((u32 *)&myip[0]);
   ip->IP_Hdr_Cksum   = 0;
 
-  //Berechnung der IP Header länge  
+  //Berechnung der IP Header lï¿½nge  
   result16 = (ip->IP_Vers_Len & 0x0F) << 2;
 
   //jetzt wird die Checksumme berechnet
@@ -842,11 +845,11 @@ void ICACHE_FLASH_ATTR make_ip_header (u8 *buffer,u32 dest_ip)
 }
 
 //----------------------------------------------------------------------------
-//Diese Routine verwaltet TCP-Einträge
+//Diese Routine verwaltet TCP-Eintrï¿½ge
 void ICACHE_FLASH_ATTR tcp_entry_add (u8 *buffer)
 {
   u32 result32;
-  u8 port_index;
+  u8 port_index, index;
 
   TCP_Header *tcp;
   IP_Header  *ip;
@@ -855,7 +858,7 @@ void ICACHE_FLASH_ATTR tcp_entry_add (u8 *buffer)
   ip  = (IP_Header  *)&buffer[IP_OFFSET];
 
   //Entry already exists?
-  for (u8 index = 0;index<(MAX_TCP_ENTRY);index++)
+  for (index = 0;index<(MAX_TCP_ENTRY);index++)
   {
       if( (tcp_entry[index].ip       == ip->IP_Srcaddr  ) &&
           (tcp_entry[index].src_port == tcp->TCP_SrcPort)    )
@@ -878,7 +881,7 @@ void ICACHE_FLASH_ATTR tcp_entry_add (u8 *buffer)
   }
 
   //Find outdoor entry
-  for (u8 index = 0;index<(MAX_TCP_ENTRY);index++)
+  for (index = 0;index<(MAX_TCP_ENTRY);index++)
   {
       if(tcp_entry[index].ip == 0)
       {
@@ -945,7 +948,8 @@ void ICACHE_FLASH_ATTR tcp_entry_add (u8 *buffer)
 //Diese Routine sucht den etntry eintrag
 char ICACHE_FLASH_ATTR tcp_entry_search (u32 dest_ip,u16 SrcPort)
 {
-	for (u8 index = 0;index<MAX_TCP_ENTRY;index++)
+  u8 index;
+	for (index = 0;index<MAX_TCP_ENTRY;index++)
 	{
     //STACK_DEBUG("\t - Search %u, ip = %u, scrPort = %u\n",index, tcp_entry[index].ip, htons(tcp_entry[index].src_port));
 		if(	tcp_entry[index].ip == dest_ip &&
@@ -980,7 +984,7 @@ void ICACHE_FLASH_ATTR udp_socket_process(void)
 		return;
 	}
   STACK_DEBUG("Calling UDP app\n");
-	//zugehörige Anwendung ausführen
+	//zugehï¿½rige Anwendung ausfï¿½hren
 	UDP_PORT_TABLE[port_index].fp(0, port_index); 
 	return;
 }
@@ -1009,7 +1013,7 @@ void ICACHE_FLASH_ATTR create_new_udp_packet( u16  data_length,
   data_length     += UDP_HDR_LEN;                //UDP Packetlength
   udp->udp_Hdrlen = htons(data_length);
 
-  data_length     += IP_VERS_LEN;                //IP Headerlänge + UDP Headerlänge
+  data_length     += IP_VERS_LEN;                //IP Headerlï¿½nge + UDP Headerlï¿½nge
   ip->IP_Pktlen = htons(data_length);
   data_length += ETH_HDR_LEN;
   ip->IP_Proto = PROT_UDP;
@@ -1017,7 +1021,7 @@ void ICACHE_FLASH_ATTR create_new_udp_packet( u16  data_length,
 
   udp->udp_Chksum = 0;
 
-  //Berechnet Headerlänge und Addiert Pseudoheaderlänge 2XIP = 8
+  //Berechnet Headerlï¿½nge und Addiert Pseudoheaderlï¿½nge 2XIP = 8
   result16 = htons(ip->IP_Pktlen) + 8;
   result16 = result16 - ((ip->IP_Vers_Len & 0x0F) << 2);
   result32 = result16 + 0x09;
@@ -1402,7 +1406,7 @@ void ICACHE_FLASH_ATTR create_new_tcp_packet(u16 data_length,u8 index)
   tcp->TCP_Acknum = htons32(result32);
   tcp->TCP_Seqnum = tcp_entry[index].ack_counter;
 
-  bufferlen = IP_VERS_LEN + TCP_HDR_LEN + data_length;    //IP Headerlänge + TCP Headerlänge
+  bufferlen = IP_VERS_LEN + TCP_HDR_LEN + data_length;    //IP Headerlï¿½nge + TCP Headerlï¿½nge
   ip->IP_Pktlen = htons(bufferlen);                      //Hier wird erstmal der IP Header neu erstellt
   bufferlen += ETH_HDR_LEN;
   ip->IP_Proto = PROT_TCP;
@@ -1410,7 +1414,7 @@ void ICACHE_FLASH_ATTR create_new_tcp_packet(u16 data_length,u8 index)
 
   tcp->TCP_Chksum = 0;
 
-  //Berechnet Headerlänge und Addiert Pseudoheaderlänge 2XIP = 8
+  //Berechnet Headerlï¿½nge und Addiert Pseudoheaderlï¿½nge 2XIP = 8
   result16 = htons(ip->IP_Pktlen) + 8;
   result16 = result16 - ((ip->IP_Vers_Len & 0x0F) << 2);
   result32 = result16 - 2;
@@ -1429,7 +1433,7 @@ void ICACHE_FLASH_ATTR create_new_tcp_packet(u16 data_length,u8 index)
 }
 
 //----------------------------------------------------------------------------
-//Diese Routine schließt einen offenen TCP-Port
+//Diese Routine schlieï¿½t einen offenen TCP-Port
 void ICACHE_FLASH_ATTR tcp_Port_close (u8 index)
 {
 	STACK_DEBUG("Port is closed in TCP stack STACK:%u\n",index);
@@ -1495,7 +1499,7 @@ void ICACHE_FLASH_ATTR tcp_port_open (u32 dest_ip,u16 port_dst,u16 port_src)
 }
 
 //----------------------------------------------------------------------------
-//Diese Routine löscht einen Eintrag
+//Diese Routine lï¿½scht einen Eintrag
 void ICACHE_FLASH_ATTR tcp_index_del (u8 index)
 {
 	if (index<MAX_TCP_ENTRY + 1)

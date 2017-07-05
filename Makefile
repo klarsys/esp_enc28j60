@@ -127,8 +127,8 @@ LIBS		= c gcc hal phy pp net80211 wpa main lwip crypto
 LIBS += esphttpd
 
 # compiler flags using during compilation of source files
-CFLAGS		= -Os -ggdb -std=c99 -Werror -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions \
-		-nostdlib -mlongcalls -mtext-section-literals -mno-serialize-volatile -D__ets__ -DICACHE_FLASH -D_STDINT_H \
+CFLAGS		= -Os -ggdb -Werror -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions \
+		-nostdlib -mlongcalls -mtext-section-literals -mno-serialize-volatile -D__ets__ -DICACHE_FLASH -D_STDINT_H -DUSE_US_TIMER \
 		-Wno-address
 
 # linker flags used to generate the main object file

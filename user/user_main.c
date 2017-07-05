@@ -26,6 +26,7 @@ some pictures of cats.
 #include "webpages-espfs.h"
 #include "cgiwebsocket.h"
 #include "stack.h"
+#include "expts.h"
 
 //The example can print out the heap use every 3 seconds. You can use this to catch memory leaks.
 #define SHOW_HEAP_USE
@@ -107,6 +108,11 @@ should be placed above the URLs they protect.
 HttpdBuiltInUrl builtInUrls[]={
 	{"*", cgiRedirectApClientToHostname, "esp8266.nonet"},
 	{"/", cgiRedirect, "/index.tpl"},
+	{"/expts/uuid", exptGetUUID, NULL},
+	{"/expts/write/*", exptSetGPIO, NULL},
+	{"/expts/read", exptGetGPIO, NULL},
+	{"/expts/blast/*", exptBlast, NULL},
+
 	{"/flash.bin", cgiReadFlash, NULL},
 	{"/led.tpl", cgiEspFsTemplate, tplLed},
 	{"/index.tpl", cgiEspFsTemplate, tplCounter},
@@ -150,18 +156,11 @@ static void ICACHE_FLASH_ATTR prHeapTimerCb(void *arg) {
 
 //Main routine. Initialize stdout, the I/O, filesystem and the webserver and we're done.
 void user_init(void) {
+        system_timer_reinit(); // Needed for us timing
   wifi_station_set_auto_connect(FALSE); 
 	stdoutInit();
   CFG_Load();
 	ioInit();	     
-  
-  for (int j = 0; j < 3; j++) {
-	  MAIN_DEBUG("\nSleeping...\n");
-	  for (int i = 0; i < 70; i++) {
-		MAIN_DEBUG(".");
-		os_delay_us(10000);
-	  }
-  }
   
   MAIN_DEBUG("\nInitialise ENC stack, dhcp if requested\n");	
   stack_init();  

@@ -230,8 +230,8 @@ void ICACHE_FLASH_ATTR dhcp_message (u8 type)
 {
   struct dhcp_msg *msg;
   u8   *options;
-  
-  for (u16 i=0; i < sizeof (struct dhcp_msg); i++) //clear eth_buffer to 0
+  u16 i;
+  for (i=0; i < sizeof (struct dhcp_msg); i++) //clear eth_buffer to 0
   {
     eth_buffer[UDP_DATA_START+i] = 0;
   }
