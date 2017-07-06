@@ -7,6 +7,7 @@ int exptGetUUID(HttpdConnData *connData);
 int exptSetGPIO(HttpdConnData *connData);
 int exptGetGPIO(HttpdConnData *connData);
 int exptBlast(HttpdConnData *connData);
+void ICACHE_FLASH_ATTR exptInit(void);
 
 typedef void (*irSendCb)(void *arg, char *err);
 

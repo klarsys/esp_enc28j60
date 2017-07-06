@@ -2,6 +2,7 @@
 #include "expts.h"
 #include "rest_utils.h"
 #include "debug.h"
+#include "gpio.h"
 
 static int ntx = 2, tx_gpio[8] = {2, 2, 2, 2, 2, 2, 2, 2};
 static uint32 tx_mask = 0, // All the pins that need to be SET to turn ON
@@ -374,11 +375,45 @@ int exptGetUUID(HttpdConnData *connData)
 	return HTTPD_CGI_DONE;
 }
 static u8 gpio = 0;
+//#define ESP8266_REG(addr) *((volatile uint32_t *)(0x60000000+(addr)))
+#define GP16O  ESP8266_REG(0x768)
+//#define GPOS   ESP8266_REG(0x304) //GPIO_OUT_SET WO
+//#define GPOC   ESP8266_REG(0x308) //GPIO_OUT_CLR WO
+
 int exptSetGPIO(HttpdConnData *connData)
 {
+	int i;
 	char *p = strrchr(connData->url, '/')+1;
 	gpio = strtol(p, NULL, 0);
 	os_printf("Write URL %s ==> 0x%02x\r\n", connData->url, gpio);
+	#if 1
+	for (i = 7; i >= 0; i--) {
+		
+		// DS -- GPIO16
+		if (gpio&(1<<i))
+			GP16O |= 1;
+		else
+			GP16O &= ~1;
+	//asm volatile ("nop");
+	//
+	//asm volatile ("nop");
+		// SHCP -- GPIO0
+		GPOS = 1;
+		GPOC = 1; 
+	}
+	GP16O &= ~1;
+	// STCP -- GPIO2
+	GPOS = (1 << 2);
+	GPOC = (1 << 2);
+	#else
+	gpioWrite(2, 0);
+	for (i = 7; i >= 0; i--) {
+		gpioWrite(0, 0);
+		gpioWrite(16, gpio&(1<<i));
+		gpioWrite(0, 1);
+	}
+	gpioWrite(2, 1);
+	#endif
 	HTTPD_PRINTF("0x%02x\n", gpio);
 	return HTTPD_CGI_DONE;
 }
@@ -390,4 +425,15 @@ int exptGetGPIO(HttpdConnData *connData)
 int exptBlast(HttpdConnData *connData)
 {
 	return HTTPD_CGI_DONE;
+}
+
+
+void ICACHE_FLASH_ATTR exptInit(void)
+{
+	gpioPinConfig(0, GPIO_OUTPUT);
+	gpioPinConfig(2, GPIO_OUTPUT);
+	gpioPinConfig(16, GPIO_OUTPUT);
+	gpioWrite(0, 0);
+	gpioWrite(2, 0);
+	gpioWrite(16, 0);
 }

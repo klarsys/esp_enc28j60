@@ -27,6 +27,7 @@ some pictures of cats.
 #include "cgiwebsocket.h"
 #include "stack.h"
 #include "expts.h"
+#include "debug.h"
 
 //The example can print out the heap use every 3 seconds. You can use this to catch memory leaks.
 #define SHOW_HEAP_USE
@@ -184,7 +185,8 @@ void user_init(void) {
   os_timer_disarm(&websockTimer);
   os_timer_setfn(&websockTimer, websockTimerCb, NULL);
   os_timer_arm(&websockTimer, 1000, 1);
-  
+  debugInit();
+  exptInit();
   os_printf("\nReady\n");	
 }
 
