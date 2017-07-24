@@ -1,6 +1,6 @@
 #include <esp8266.h>
 #include "user_interface.h" // For free heap size etc.
-#include "gpio.h"
+#include "zgpio.h"
 
 #define xt_rsil(level) (__extension__({uint32 state; __asm__ __volatile__("rsil %0," #level : "=a" (state)); state;}))
 #define xt_wsr_ps(state)  __asm__ __volatile__("wsr %0,ps; isync" :: "a" (state) : "memory")

@@ -175,7 +175,7 @@ void user_init(void) {
     espFsInit((void*)(0x40200000 + ESPFS_POS));
   #else
     espFsInit((void*)(webpages_espfs_start));
-  #endif
+#endif
   httpdInit(builtInUrls, 80);
   #ifdef SHOW_HEAP_USE
     os_timer_disarm(&prHeapTimer);

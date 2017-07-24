@@ -2,7 +2,7 @@
 #include "expts.h"
 #include "rest_utils.h"
 #include "debug.h"
-#include "gpio.h"
+#include "zgpio.h"
 
 static int ntx = 2, tx_gpio[8] = {2, 2, 2, 2, 2, 2, 2, 2};
 static uint32 tx_mask = 0, // All the pins that need to be SET to turn ON
